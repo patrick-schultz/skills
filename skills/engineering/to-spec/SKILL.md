@@ -16,7 +16,9 @@ The issue tracker and triage label vocabulary should have been provided to you. 
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+3. Move draft docs into the spec. If this session edited `GLOSSARY.md` or wrote ADRs, copy their exact text into the spec's Docs to land section, then revert those files in the working copy (`jj restore <paths>` or `git restore <paths>`; delete new ADR files). Name each new ADR by slug only; the implementer gives it the next free number when it lands. The spec describes these docs as still to be written.
+
+4. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
 
 <spec-template>
 
@@ -63,6 +65,10 @@ A list of testing decisions that were made. Include:
 - A description of what makes a good test (only test external behavior, not implementation details)
 - Which modules will be tested
 - Prior art for the tests (i.e. similar types of tests in the codebase)
+
+## Docs to land
+
+The exact glossary entries and ADR text that ship with this change, each ADR named by slug. Omit this section if there are none.
 
 ## Out of Scope
 

@@ -35,6 +35,8 @@ Break the work into **tracer bullet** tickets.
 
 </vertical-slice-rules>
 
+Give each ticket the draft docs it introduces. Draft docs are glossary entries and ADRs from the source spec's Docs to land section, or ones this session wrote into `GLOSSARY.md` or `docs/adr/`. Put each on the first ticket that uses the concept, in that ticket's Docs to land section. Then follow `/to-spec`'s rules: revert the working-copy edits, name new ADRs by slug only, and describe the docs as still to be written.
+
 Give each ticket its **blocking edges**: the other tickets that must complete before it can start. A ticket with no blockers can start immediately.
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change (rename a column, retype a shared symbol) whose **blast radius** fans across the whole codebase, so a single edit breaks thousands of call sites at once and no vertical slice can land green. Don't force it into a tracer bullet; sequence it as **expand–contract**. First expand: add the new form beside the old so nothing breaks. Then migrate the call sites over in batches sized by blast radius (per package, per directory), each batch its own ticket blocked by the expand, keeping CI green batch to batch because the old form still exists. Finally contract: delete the old form once no caller remains, in a ticket blocked by every migrate batch. When even the batches can't stay green alone, keep the sequence but let them share an integration branch that all block a final integrate-and-verify ticket; green is promised only there.
@@ -79,6 +81,8 @@ Do NOT close or modify any parent issue.
 - [ ] Acceptance criterion 1
 - [ ] Acceptance criterion 2
 
+**Docs to land:** the exact glossary entries and ADR text this ticket ships, each ADR named by slug, or omit.
+
 </local-ticket-template>
 
 <issue-template>
@@ -95,6 +99,10 @@ The end-to-end behaviour this ticket makes work, from the user's perspective, no
 
 - [ ] Criterion 1
 - [ ] Criterion 2
+
+## Docs to land
+
+The exact glossary entries and ADR text this ticket ships, each ADR named by slug. Omit this section if there are none.
 
 ## Blocked by
 

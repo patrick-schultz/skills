@@ -22,6 +22,12 @@ Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so th
 
 Before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here, not inside two parallel sub-agents.
 
+In a jj repo (`jj --no-pager root` succeeds), use jj instead of git throughout, and pass the jj forms to the sub-agents:
+
+- Diff: `jj --no-pager diff --git --from 'fork_point(<fixed-point> | @)'`
+- Commits: `jj --no-pager log --no-graph -r '<fixed-point>..@'`
+- Resolve: `jj --no-pager log --no-graph -r '<fixed-point>' -n 1`
+
 ### 2. Identify the spec source
 
 Look for the originating spec, in this order:
@@ -67,7 +73,7 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 - The diff command and commit list.
 - The path or fetched contents of the spec.
-- The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
+- The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong; (d) untested requirements: for each acceptance criterion and each 'must', 'always', or 'never' in the spec, name the test that would fail if it were violated, and list every one with no such test; (e) items in the spec's 'Docs to land' section that are absent from the diff. Quote the spec line for each finding. Under 400 words."
 
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 

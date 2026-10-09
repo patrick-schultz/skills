@@ -4,7 +4,7 @@ How to deepen a cluster of shallow modules safely, given its dependencies. Assum
 
 ## Dependency categories
 
-When assessing a candidate for deepening, classify its dependencies. The category determines how the deepened module is tested across its seam.
+When assessing a candidate for deepening, classify its dependencies. The category determines how the deepened module's tests handle that dependency: hard-wired and exercised for real, or replaced by an adapter at a seam.
 
 ### 1. In-process
 
@@ -27,7 +27,7 @@ Third-party services (Stripe, Twilio, etc.) you don't control. The deepened modu
 ## Seam discipline
 
 - **One adapter means a hypothetical seam. Two adapters means a real one.** Don't introduce a port unless at least two adapters are justified (typically production + test). A single-adapter seam is just indirection.
-- **Internal seams vs external seams.** A deep module can have internal seams (private to its implementation, used by its own tests) as well as the external seam at its interface. Don't expose internal seams through the interface just because tests use them.
+- **Internal seams vs external seams.** A deep module can have internal seams (private to its implementation, used by its own tests) as well as external seams in its interface. Don't expose internal seams through the interface just because tests use them.
 
 ## Testing strategy: replace, don't layer
 

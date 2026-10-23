@@ -1,0 +1,5 @@
+interface:
+  display_name: "Implement Issue"
+  short_description: "Build a GitHub issue unattended, open a draft PR"
+policy:
+  allow_implicit_invocation: false

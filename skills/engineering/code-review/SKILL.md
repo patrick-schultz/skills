@@ -18,13 +18,14 @@ The issue tracker should have been provided to you. If `docs/agents/issue-tracke
 
 Whatever the user said is the fixed point (a commit SHA, branch name, tag, `main`, `HEAD~5`, etc.). If they didn't specify one, ask for it.
 
-Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
+Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also capture its file summary, `git diff --stat <fixed-point>...HEAD`, and the list of commits via `git log <fixed-point>..HEAD --oneline`.
 
 Before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here, not inside two parallel sub-agents.
 
 In a jj repo (`jj --no-pager root` succeeds), use jj instead of git throughout, and pass the jj forms to the sub-agents:
 
 - Diff: `jj --no-pager diff --git --from 'fork_point(<fixed-point> | @)'`
+- File summary: `jj --no-pager diff --stat --from 'fork_point(<fixed-point> | @)'`, without `--git`, which would print the whole diff after the summary
 - Commits: `jj --no-pager log --no-graph -r '<fixed-point>..@'`
 - Resolve: `jj --no-pager log --no-graph -r '<fixed-point>' -n 1`
 
@@ -63,15 +64,17 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 ### 4. Spawn both sub-agents in parallel
 
+Both prompts include the diff command, the file-summary command, and this reading order: "Run the file summary first, then read the diff one file at a time by appending the path to the diff command (`-- <path>` for git, `<path>` for jj). A whole diff can exceed your tool's output limit, and a truncated diff costs a reread."
+
 **Standards sub-agent prompt** should include:
 
-- The full diff command and commit list.
+- The diff and file-summary commands, the reading order, and the commit list.
 - The list of standards-source files you found in step 3, **plus the smell baseline from step 3** pasted in full (the sub-agent has no other access to it).
 - The brief: "Report, per file/hunk where relevant, (a) every place the diff violates a documented standard: cite the standard (file + the rule); and (b) any baseline smell you spot: name it and quote the hunk. Distinguish hard violations from judgement calls: documented-standard breaches can be hard, but baseline smells are always judgement calls, and a documented repo standard overrides the baseline. Skip anything tooling enforces. Running tests and automated checks is the responsibility of the caller. Under 400 words."
 
 **Spec sub-agent prompt** should include:
 
-- The diff command and commit list.
+- The diff and file-summary commands, the reading order, and the commit list.
 - The path or fetched contents of the spec.
 - The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong; (d) untested requirements: for each acceptance criterion and each 'must', 'always', or 'never' in the spec, name the test that would fail if it were violated, and list every one with no such test; (e) items in the spec's 'Docs to land' section that are absent from the diff. Quote the spec line for each finding. Running tests and automated checks is the responsibility of the caller. Under 400 words."
 
